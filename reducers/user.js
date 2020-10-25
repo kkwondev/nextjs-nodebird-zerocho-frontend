@@ -1,6 +1,6 @@
 export const initialState = {
         isLoggedIn : false,
-        user: null,
+        me: null,
         signUpdata : {},
         loginData : {},
 }
@@ -25,14 +25,14 @@ const reducer = (state = initialState ,action) => {
                 ...state,
                 ...state.user,
                 isLoggedIn:true,
-                user:action.data
+                me:action.data
             }
             case 'LOG_OUT' :
                 return {
                     ...state,
                     ...state.user,
                     isLoggedIn:false,
-                    user:null
+                    me:null
                     }
             default:
                  return state;
