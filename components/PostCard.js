@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {RetweetOutlined,HeartOutlined,MessageOutlined,EllipsisOutlined,HeartTwoTone } from '@ant-design/icons';
 import { useSelector } from 'react-redux';
 
+import PostCardContent from './PostCardContent';
 import PostImages from './PostImages';
 import CommentForm from './CommentForm';
 import { useCallback, useState } from 'react';
@@ -47,7 +48,7 @@ const PostCard = ({post}) => {
                 <Card.Meta
                 avatar={<Avatar>{post.User.nickname[0]}</Avatar>}
                 title={post.User.nickname}
-                description={post.content}
+                description={<PostCardContent postData={post.content} />}
                 />
             </Card>
             {commentFormOpened && (
@@ -72,8 +73,8 @@ const PostCard = ({post}) => {
         </div>
     );
 }
-PostCard.propTypes = {
-    Post: PropTypes.shape({
+PostCard.PropTypes = {
+    post: PropTypes.shape({
         id:PropTypes.number,
         User:PropTypes.object,
         content:PropTypes.string,
