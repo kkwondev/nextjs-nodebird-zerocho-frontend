@@ -15,7 +15,7 @@ const PostCardContent = ({postData}) => ( //해시태그 regexr.com
 
 );
 
-PostCardContent.PropTypes = {
+PostCardContent.propTypes = {
     postData:PropTypes.string.isRequired
 };
 

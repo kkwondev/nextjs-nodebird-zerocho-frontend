@@ -51,7 +51,7 @@ const PostImages =({images}) => {
         </>
     );
 }
-PostImages.PropTypes = {
+PostImages.propTypes = {
     Images:PropTypes.arrayOf(PropTypes.object)
 }
 
