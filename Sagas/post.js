@@ -1,5 +1,11 @@
-import axios from 'axios';
+// import axios from 'axios';
 import { all,put,delay,takeLatest,fork } from "redux-saga/effects";
+import shortid from "shortid";
+import { 
+    ADD_POST_SUCCUESS, ADD_POST_FAILURE, ADD_POST_REQUEST,
+    ADD_COMMENT_REQUEST, ADD_COMMENT_FAILURE ,ADD_COMMENT_SUCCUESS, 
+    REMOVE_POST_REQUEST, REMOVE_POST_SUCCUESS, REMOVE_POST_FAILURE } from '../reducers/post';
+import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from "../reducers/user";
 
 function addPostAPI(data) {
     return axios.post('/api/post',data) // 요청한다. 서버에
@@ -9,14 +15,72 @@ function addPostAPI(data) {
 function* addPost(action) {
     // const result = yield call(addPostAPI,action.data) // call 동기(기다림) fork 비동기(안기다림)
     yield delay(1000);
+    const id = shortid.generate()
     try { //요청에 성공 했다.
         yield put ({
-            type : 'ADD_POST_SUCCES',
-            data: result.data // 요청한 데이터를 받는다. 서버에서
+            type : ADD_POST_SUCCUESS,
+           // data: result.data // 요청한 데이터를 받는다. 서버에서
+           data:{
+            id,
+            content:action.data
+           },
+        });
+        yield put ({
+            type : ADD_POST_TO_ME,
+            data : id,
+        })
+     } catch (err) { // 요청에 실패했다.
+         yield put ({
+             type:ADD_POST_FAILURE,
+             data: err.response.data
+         })
+     }
+}
+
+function removePostAPI(data) {
+    return axios.post('/api/post',data) // 요청한다. 서버에
+}
+
+
+function* removePost(action) {
+    // const result = yield call(removePostAPI,action.data) // call 동기(기다림) fork 비동기(안기다림)
+    yield delay(1000);
+    const id = shortid.generate()
+    try { //요청에 성공 했다.
+        yield put ({
+            type : REMOVE_POST_SUCCUESS,
+           // data: result.data // 요청한 데이터를 받는다. 서버에서
+            data : action.data,
+        });
+        yield put ({
+            type : REMOVE_POST_OF_ME,
+            data : action.data,
+        })
+     } catch (err) { // 요청에 실패했다.
+         yield put ({
+             type:REMOVE_POST_FAILURE,
+             data: err.response.data
+         })
+     }
+}
+
+function addCommentAPI(data) {
+    return axios.post(`/api/post/${id}/comment`,data) // 요청한다. 서버에
+}
+
+
+function* addComment(action) {
+    // const result = yield call(addCommentAPI,action.data) // call 동기(기다림) fork 비동기(안기다림)
+    yield delay(1000);
+    try { //요청에 성공 했다.
+        yield put ({
+            type : ADD_COMMENT_SUCCUESS,
+          //  data: result.data // 요청한 데이터를 받는다. 서버에서
+          data:action.data
         });
      } catch (err) { // 요청에 실패했다.
          yield put ({
-             type:'ADD_POST_FAILUTE',
+             type:ADD_COMMENT_FAILURE,
              data: err.response.data
          })
      }
@@ -25,12 +89,21 @@ function* addPost(action) {
 
 
 function* watchAddPost() {
-    yield takeLatest('ADD_POST_REQUEST', addPost);
+    yield takeLatest(ADD_POST_REQUEST, addPost);
+}
+
+function* watchAddComment() {
+    yield takeLatest(ADD_COMMENT_REQUEST, addComment);
+}
+function* watchRemovePost() {
+    yield takeLatest(REMOVE_POST_REQUEST, removePost);
 }
 
 
 export default function* postSaga() {
     yield all([
-      fork(watchAddPost)  
+      fork(watchAddPost), 
+      fork(watchAddComment), 
+      fork(watchRemovePost),
     ])
 }

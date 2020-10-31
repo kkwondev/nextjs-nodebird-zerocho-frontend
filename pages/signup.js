@@ -4,11 +4,15 @@ import Head from 'next/head'
 import Form from 'antd/lib/form/Form';
 import { Input,Checkbox,Button } from 'antd';
 import useInput from '../hooks/useInput';
+import { SIGN_UP_REQUEST } from '../reducers/user';
+import { useDispatch, useSelector } from 'react-redux';
 
 
 
 const Signup = () => {
-    const [id, onChangeId] = useInput('');
+    const dispatch = useDispatch();
+    const {signUpLoading} = useSelector((state) => state.user)
+    const [email, onChangeEmail] = useInput('');
     const [nickname, onChangeNickname] = useInput('');
     const [password,onChangePassword] = useInput('');
 
@@ -33,8 +37,11 @@ const Signup = () => {
         if (!term) {
             return setTermError(true);
         }
-        console.debug(id,password,nickname)
-    },[password,passwordCheck,term])
+        dispatch({
+            type:SIGN_UP_REQUEST,
+            data: {email,password, nickname}
+        })
+    },[email,password,passwordCheck,term])
     return (
         <>
         <Head>
@@ -43,9 +50,9 @@ const Signup = () => {
         <AppLayout>
             <Form onFinish={onsubmit}>
                 <div>
-                    <label htmlFor="user-id">아이디</label>
+                    <label htmlFor="user-email">아이디</label>
                     <br/>
-                    <Input name="user-id" value={id} required onChange={onChangeId} />
+                    <Input name="user-email" type="email" value={email} required onChange={onChangeEmail} />
                 </div>
                 <div>
                     <label htmlFor="user-nickname">닉네임</label>
@@ -66,7 +73,7 @@ const Signup = () => {
                 {termError && <div>약관동의 하세요</div>}
                 {passwordError && <div>비밀번호가 일치하지 않습니다.</div>}
                 <div>
-                    <Button type="primary" htmlType="submit">가입하기</Button>
+                    <Button type="primary" htmlType="submit" type="email" loading={signUpLoading}>가입하기</Button>
                 </div>
             </Form>
         </AppLayout>
