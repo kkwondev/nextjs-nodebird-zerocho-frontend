@@ -1,47 +1,18 @@
 import shortId from 'shortid';
 import produce from 'immer';
+import faker from 'faker';
 
 
 export const initialState = {
-    mainPosts: [{
-      id: shortId.generate(),
-      User: {
-        id: 1,
-        nickname: 'kkwon',
-      },
-      content: '첫 번째 게시글 #해시태그 #경원이',
-      Images: [{
-        id:shortId.generate(),
-        src: 'https://bookthumb-phinf.pstatic.net/cover/137/995/13799585.jpg?udate=20180726',
-      }, {
-        id:shortId.generate(),
-        src: 'https://gimg.gilbut.co.kr/book/BN001958/rn_view_BN001958.jpg',
-      }, 
-      {
-        id:shortId.generate(),
-        src: 'https://gimg.gilbut.co.kr/book/BN001998/rn_view_BN001998.jpg',
-      }
-    ],
-      Comments: [{
-        id:shortId.generate(),
-        User: {
-          id:shortId.generate(),
-          nickname: 'nero',
-        },
-        content: '우와 개정판이 나왔군요~',
-      }, {
-        id:shortId.generate(),
-        User: {
-          id:shortId.generate(),
-          nickname: 'hero',
-        },
-        content: '얼른 사고싶어요~',
-      }]
-    }],
+    mainPosts: [],
     imagePaths: [],
+    hasMorePost:true,
     addPostLoading:false,
     addPostDone:false,
     addPostError:null,
+    loadPostLoading:false,
+    loadPostDone:false,
+    loadPostError:null,
     removePostLoading:false,
     removePostDone:false,
     removePostError:null,
@@ -49,7 +20,30 @@ export const initialState = {
     addCommentDone:false,
     addCommentError:null,
   };
-  
+
+export const generateDummyPost = (number) => Array(number).fill().map(() => ({
+  id:shortId.generate(),
+  User : {
+    id:shortId.generate(),
+    nickname:faker.name.findName()
+  },
+  content:faker.lorem.paragraph(),
+  Images:[{
+    src:faker.image.image(),
+  }],
+  Comments:[{
+    User : {
+      id:shortId.generate(),
+      nickname:faker.name.findName(),
+    },
+    content: faker.lorem.sentence(),
+  }],
+}));
+
+  export const LOAD_POST_REQUEST = 'LOAD_POST_REQUEST';
+  export const LOAD_POST_SUCCUESS = 'LOAD_POST_SUCCUESS';
+  export const LOAD_POST_FAILURE = 'LOAD_POST_FAILURE';
+
   export const ADD_POST_REQUEST = 'ADD_POST_REQUEST';
   export const ADD_POST_SUCCUESS = 'ADD_POST_SUCCUESS';
   export const ADD_POST_FAILURE = 'ADD_POST_FAILURE';
@@ -103,6 +97,21 @@ export const addComment = (data) => ({
           draft.mainPosts.unshift(dummyPost(action.data));
         break;
         case ADD_POST_FAILURE:
+          draft.addPostLoading = false;
+          draft.addPostError = action.error;
+        break;
+        case LOAD_POST_REQUEST: 
+          draft.loadPostLoading = true;
+          draft.loadPostDone = false;
+          draft.loadPostError = null;
+          break;
+        case LOAD_POST_SUCCUESS:
+          draft.loadPostLoading = false;
+          draft.loadPostDone = true;
+          draft.mainPosts = action.data.concat(draft.mainPosts);
+          draft.hasMorePost = draft.mainPosts.length < 50;
+          break;
+        case LOAD_POST_FAILURE:
           draft.addPostLoading = false;
           draft.addPostError = action.error;
         break;

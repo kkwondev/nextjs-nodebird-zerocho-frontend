@@ -1,12 +1,23 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import AppLayout from '../components/AppLayout';
 import Head from 'next/head';
 import NicknameEditForm from '../components/NicknameEditForm'
 import FollowList from '../components/FollowList';
 import { useSelector } from 'react-redux';
+import  Router  from 'next/router';
 
 const Profile = () => {
     const { me } = useSelector((state) => state.user)
+// 로그인 안한상태에서 or 프로필 상태에서 홈으로 가기
+    useEffect(()=> {
+        if(!(me && me.id)) {
+            alert('로그인을 하세요')
+            Router.push('/')
+        }
+    },[me && me.id])
+    if (!me) {
+        return null;
+    }
 
     return (
         <>

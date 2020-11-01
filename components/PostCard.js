@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {RetweetOutlined,HeartOutlined,MessageOutlined,EllipsisOutlined,HeartTwoTone } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
 
+import FollowButton from './FollowButton';
 import PostCardContent from './PostCardContent';
 import PostImages from './PostImages';
 import CommentForm from './CommentForm';
@@ -55,6 +56,7 @@ const PostCard = ({post}) => {
                     <EllipsisOutlined />
                 </Popover>
             ]}
+            extra={id &&(<FollowButton post={post}/>)}
             >
                 <Card.Meta
                 avatar={<Avatar>{post.User.nickname[0]}</Avatar>}
