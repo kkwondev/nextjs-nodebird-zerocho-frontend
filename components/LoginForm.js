@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import {Form,Input,Button} from 'antd';
 import PropTypes from 'prop-types';
 import Link from 'next/link';
@@ -17,9 +17,15 @@ const FormWrapper = styled(Form)`
 
 const LoginForm = () => {
     const dispatch = useDispatch();
-    const {logInLoading} = useSelector((state)=>state.user)
+    const {logInLoading, logInError} = useSelector((state)=>state.user)
     const [email, onChangeEmail] = useInput('');
     const [password,onChangePassword] = useInput('');
+
+    useEffect(()=> {
+        if(logInError) {
+            alert(logInError);
+        }
+    },[logInError])
 
     const onsubmitForm = useCallback(() => {
         console.log(email,password);
@@ -31,7 +37,7 @@ const LoginForm = () => {
             <div>
                 <label htmlFor="user-email">아이디</label>
                 <br/>
-                <Input name="user-email" value={email} onChange={onChangeEmail} required/>
+                <Input name="user-email" type="email" value={email} onChange={onChangeEmail} required/>
             </div>
             <div>
             <label htmlFor="user-password">비밀번호</label>

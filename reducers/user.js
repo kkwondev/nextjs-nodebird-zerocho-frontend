@@ -68,8 +68,8 @@ export const loginoutRequestAction = (data) => {
 
 const dummyUser = (data) => ({
     ...data,
-    nickname: '강경원',
-    id:1,
+    nickname: data.nickname,
+    id:data.id,
     Posts:[{id:1}],
     Followings:[{ nickname: '윤민이'},{nickname:'ddd'},{nickname:'123'}],
     Followers:[{ nickname: '윤민이'},{nickname:'ddd'},{nickname:'123'}]

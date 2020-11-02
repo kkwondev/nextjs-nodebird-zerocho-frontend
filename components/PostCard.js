@@ -14,7 +14,7 @@ const PostCard = ({post}) => {
     const [liked,setLiked] = useState(false)
     const [commentFormOpened, setCommentFromOpened] = useState(false)
     const id = useSelector(state => state.user.me?.id);
-    const {removePostLoading} = useSelector((state) => state.post)
+    const {removePostLoading, me} = useSelector((state) => state.post)
     const dispatch = useDispatch()
 
     const onToggleLike = useCallback(() => {
