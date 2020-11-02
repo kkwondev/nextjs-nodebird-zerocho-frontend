@@ -8,7 +8,7 @@ import {LOG_IN_SUCCESS, LOG_IN_FAILURE, LOG_IN_REQUEST,
         FOLLOW_SUCCESS, FOLLOW_FAILURE } from '../reducers/User';
 
 function logInAPI(data) {
-    return axios.post('http://localhost:3065/user/login',data) // 요청한다. 서버에
+    return axios.post('/user/login',data) // 요청한다. 서버에
 }
 
 
@@ -31,7 +31,7 @@ function* logIn(action) {
 }
 
 function logOutAPI() {
-    return axios.post('http://localhost:3065/user/logout') // 요청한다. 서버에
+    return axios.post('/user/logout') // 요청한다. 서버에
 }
 
 
@@ -50,7 +50,7 @@ function* logOut() {
 }
 
 function signUpAPI(data) {
-        return axios.post('http://localhost:3065/user',data);
+        return axios.post('/user',data);
 }
 
 
