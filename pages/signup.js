@@ -4,7 +4,7 @@ import Head from 'next/head'
 import Form from 'antd/lib/form/Form';
 import { Input,Checkbox,Button } from 'antd';
 import useInput from '../hooks/useInput';
-import { SIGN_UP_REQUEST } from '../reducers/user';
+import { LOG_OUT_SUCCESS, SIGN_UP_REQUEST } from '../reducers/user';
 import { useDispatch, useSelector } from 'react-redux';
 import Router from 'next/router';
 
@@ -20,6 +20,9 @@ const Signup = () => {
     useEffect(()=> {
         if(signUpDone) {
             Router.push('/')
+            dispatch({
+                type:LOG_OUT_SUCCESS,
+            })
         }
     },[signUpDone])
 

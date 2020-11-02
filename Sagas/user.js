@@ -52,16 +52,14 @@ function* logOut() {
      }
 }
 
-
 function signUpAPI(data) {
-    return axios.post('http://localhost:3065/user',data) // 요청한다. 서버에
+        return axios.post('http://localhost:3065/user',data);
 }
 
 
 function* signUp(action) {
-    const result = yield call(signUpAPI, action.data) // call 동기(기다림) fork 비동기(안기다림)
-    console.log(result);
     try { //요청에 성공 했다.
+        const result = yield call(signUpAPI, action.data) // call 동기(기다림) fork 비동기(안기다림)
         yield put ({
             type : SIGN_UP_SUCCESS,
            // data: result.data // 요청한 데이터를 받는다. 서버에서
@@ -73,6 +71,7 @@ function* signUp(action) {
          })
      }
 }
+
 
 function followAPI() {
     return axios.post('/api/follow') // 요청한다. 서버에
