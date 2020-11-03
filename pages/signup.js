@@ -12,14 +12,22 @@ import Router from 'next/router';
 
 const Signup = () => {
     const dispatch = useDispatch();
-    const {signUpLoading, signUpDone, signUpError} = useSelector((state) => state.user)
+    const {signUpLoading, signUpDone, signUpError, me} = useSelector((state) => state.user)
     const [email, onChangeEmail] = useInput('');
     const [nickname, onChangeNickname] = useInput('');
     const [password,onChangePassword] = useInput('');
-    
+
+
+    useEffect(()=> {
+        if(me && me.id) {
+            Router.replace('/') // 뒤로가기 삭제
+        }
+    },[me && me.id])
+
+
     useEffect(()=> {
         if(signUpDone) {
-            Router.push('/')
+            Router.replace('/')
             dispatch({
                 type:LOG_OUT_SUCCESS,
             })
