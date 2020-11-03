@@ -9,7 +9,7 @@ import { useSelector } from 'react-redux';
 
 
 const SearchInput = styled(Input.Search)`
-    vertical-align: "middle";
+    line-height:48px;
 `;
 const Global = createGlobalStyle`
     .ant-row {
@@ -26,7 +26,8 @@ const Global = createGlobalStyle`
 
 
 const AppLayout = ({children}) => {
-    const { me } = useSelector(state => state.user);
+    const { me, logInDone } = useSelector(state => state.user);
+    console.debug(logInDone)
     return (
         <div>
             <Global/>
@@ -41,9 +42,11 @@ const AppLayout = ({children}) => {
                 <Menu.Item>
                    <SearchInput enterButton/>
                 </Menu.Item>
+            { !logInDone && (
                 <Menu.Item>
                     <Link href="/signup"><a>회원가입</a></Link>
                 </Menu.Item>
+            )}
             </Menu>
             <Row gutter={8}>
                 <Col xs={24} md={6}>
