@@ -59,7 +59,7 @@ function* removePost(action) {
 }
 
 function addCommentAPI(data) {
-    return axios.post(`/post/${data.postId}/comment`,data) // 요청한다. 서버에
+    return axios.post(`/post/${data.PostId}/comment`,data) // 요청한다. 서버에
 }
 
 
