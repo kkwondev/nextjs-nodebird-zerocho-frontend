@@ -32,25 +32,23 @@ function* addPost(action) {
 }
 
 function removePostAPI(data) {
-    return axios.post('/api/post',data) // 요청한다. 서버에
+    return axios.delete(`/post/${data}`) // 요청한다. 서버에
 }
 
 
 function* removePost(action) {
-    // const result = yield call(removePostAPI,action.data) // call 동기(기다림) fork 비동기(안기다림)
-    yield delay(1000);
-    const id = shortid.generate()
     try { //요청에 성공 했다.
+        const result = yield call(removePostAPI,action.data) // call 동기
         yield put ({
             type : REMOVE_POST_SUCCUESS,
-           // data: result.data // 요청한 데이터를 받는다. 서버에서
-            data : action.data,
+           data: result.data,
         });
         yield put ({
             type : REMOVE_POST_OF_ME,
-            data : action.data,
+            data : result.data.id,
         })
      } catch (err) { // 요청에 실패했다.
+        console.error(err)
          yield put ({
              type:REMOVE_POST_FAILURE,
              data: err.response.data
@@ -84,6 +82,7 @@ function loadPostAPI(data) {
   
   function* loadPost(action) {
     try {
+        console.debug(action.data)
       const result = yield call(loadPostAPI, action.data);
       yield put({
         type: LOAD_POST_SUCCESS,
