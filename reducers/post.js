@@ -1,6 +1,6 @@
-import shortId from 'shortid';
+
 import produce from 'immer';
-import faker from 'faker';
+
 
 
 export const initialState = {
@@ -21,27 +21,9 @@ export const initialState = {
     addCommentError:null,
   };
 
-export const generateDummyPost = (number) => Array(number).fill().map(() => ({
-  id:shortId.generate(),
-  User : {
-    id:shortId.generate(),
-    nickname:faker.name.findName()
-  },
-  content:faker.lorem.paragraph(),
-  Images:[{
-    src:faker.image.image(),
-  }],
-  Comments:[{
-    User : {
-      id:shortId.generate(),
-      nickname:faker.name.findName(),
-    },
-    content: faker.lorem.sentence(),
-  }],
-}));
 
   export const LOAD_POST_REQUEST = 'LOAD_POST_REQUEST';
-  export const LOAD_POST_SUCCUESS = 'LOAD_POST_SUCCUESS';
+  export const LOAD_POST_SUCCESS = 'LOAD_POST_SUCCESS';
   export const LOAD_POST_FAILURE = 'LOAD_POST_FAILURE';
 
   export const ADD_POST_REQUEST = 'ADD_POST_REQUEST';
@@ -87,7 +69,7 @@ export const addComment = (data) => ({
           draft.loadPostDone = false;
           draft.loadPostError = null;
           break;
-        case LOAD_POST_SUCCUESS:
+        case LOAD_POST_SUCCESS:
           draft.loadPostLoading = false;
           draft.loadPostDone = true;
           draft.mainPosts = action.data.concat(draft.mainPosts);

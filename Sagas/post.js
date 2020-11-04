@@ -5,7 +5,7 @@ import {
     ADD_POST_SUCCUESS, ADD_POST_FAILURE, ADD_POST_REQUEST,
     ADD_COMMENT_REQUEST, ADD_COMMENT_FAILURE ,ADD_COMMENT_SUCCUESS, 
     REMOVE_POST_REQUEST, REMOVE_POST_SUCCUESS, REMOVE_POST_FAILURE, 
-    LOAD_POST_REQUEST, LOAD_POST_SUCCUESS, generateDummyPost } from '../reducers/post';
+    LOAD_POST_REQUEST, LOAD_POST_SUCCESS, LOAD_POST_FAILURE } from '../reducers/post';
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from "../reducers/user";
 
 function addPostAPI(data) {
@@ -79,26 +79,24 @@ function* addComment(action) {
 }
 
 function loadPostAPI(data) {
-    return axios.get(`/api/post/${id}/comment`,data) // 요청한다. 서버에
-}
-
-
-function* loadPost(action) {
-    // const result = yield call(addCommentAPI,action.data) // call 동기(기다림) fork 비동기(안기다림)
-    yield delay(1000);
-    try { //요청에 성공 했다.
-        yield put ({
-            type : LOAD_POST_SUCCUESS,
-          //  data: result.data // 요청한 데이터를 받는다. 서버에서
-            data: generateDummyPost(10),
-        });
-     } catch (err) { // 요청에 실패했다.
-         yield put ({
-             type:LOAD_POST_REQUEST,
-             data: err.response.data
-         })
-     }
-}
+    return axios.get('/posts',data);
+  }
+  
+  function* loadPost(action) {
+    try {
+      const result = yield call(loadPostAPI, action.data);
+      yield put({
+        type: LOAD_POST_SUCCESS,
+        data: result.data,
+      });
+    } catch (err) {
+      console.error(err);
+      yield put({
+        type: LOAD_POST_FAILURE,
+        error: err.response.data,
+      });
+    }
+  }
 
 
 
