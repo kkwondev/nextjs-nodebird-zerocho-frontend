@@ -7,29 +7,69 @@ import FollowButton from './FollowButton';
 import PostCardContent from './PostCardContent';
 import PostImages from './PostImages';
 import CommentForm from './CommentForm';
-import { useCallback, useState } from 'react';
-import { REMOVE_POST_REQUEST } from '../reducers/post';
+import { useCallback, useEffect, useState } from 'react';
+import { REMOVE_POST_REQUEST,LIKE_POST_REQUEST,UNLIKE_POST_REQUEST,REMOVE_COMMENT_REQUEST } from '../reducers/post';
 
 const PostCard = ({post}) => {
-    const [liked,setLiked] = useState(false)
-    const [commentFormOpened, setCommentFromOpened] = useState(false)
-    const id = useSelector(state => state.user.me?.id);
-    const {removePostLoading, me} = useSelector((state) => state.post)
-    const dispatch = useDispatch()
 
-    const onToggleLike = useCallback(() => {
-        setLiked((prev)=> !prev);
-    }, [])
+    const [commentFormOpened, setCommentFromOpened] = useState(false)
+    const [postItems, setPostItems] = useState([])
+    const id = useSelector(state => state.user.me?.id);
+    const {removePostLoading} = useSelector((state) => state.post)
+    const comments = useSelector((state) => post.Comments);
+    const dispatch = useDispatch()
+    // 좋아요 액션 타입 
+    const onLike = useCallback(() => {
+        dispatch({
+            type:LIKE_POST_REQUEST,
+            data:post.id
+        })
+    },[])
+    const onunLike = useCallback(() => {
+        dispatch({
+            type:UNLIKE_POST_REQUEST,
+            data:post.id
+        })
+    },[])
+
+    // 댓글창
     const onToggleComment = useCallback(() => {
         setCommentFromOpened((prev)=> !prev);
     }, [])
-
+    // 게시글 삭제 액션 타입
     const onRemovePost = useCallback(() => {
         dispatch({
             type:REMOVE_POST_REQUEST,
             data:post.id,
         })
     }, [])
+    // const onRemoveComment = useCallback(() => {
+    //     dispatch({
+    //         type:REMOVE_COMMENT_REQUEST,
+    //         data:post.Comments,
+    //     })
+    // }, [])
+
+    const onRemoveComment = (post_id) => {
+        dispatch({
+            type:REMOVE_COMMENT_REQUEST,
+            data: { id:post_id, PostId: post.id}
+        })
+    }
+    
+    const liked = post.Likers.find((v) => v.UserId === id);
+
+    useEffect(() => {
+
+        const myList = post.Comments.filter(function(e){
+            return e.UserId === id
+        })
+        
+        if(myList.length > 0) {
+            setPostItems(myList)
+        }
+    }, [post.Comments])
+
     return (
         <div style={{marginBottom: 20}}>
             <Card
@@ -37,8 +77,8 @@ const PostCard = ({post}) => {
             actions={[
                 <RetweetOutlined key="retwwet"/>,
                 liked
-                    ? <HeartTwoTone twoToneColor="#eb2f96" key="heart" onClick={onToggleLike}/>
-                    : <HeartOutlined key="heart"onClick={onToggleLike}/>,
+                    ? <HeartTwoTone twoToneColor="#eb2f96" key="heart" onClick={onunLike}/>
+                    : <HeartOutlined key="heart"onClick={onLike}/>,
                  <MessageOutlined key="comment" onClick={onToggleComment} />,
      
                 <Popover key="more" content={(
@@ -72,14 +112,33 @@ const PostCard = ({post}) => {
                     itemLayout="horizontal"
                     dataSource={post.Comments}
                     renderItem={(item) => (
-                            <li>
-                                <Comment
-                                author={item.User.nickname}
-                                avatar={<Avatar>{item.User.nickname[0]}</Avatar>}
-                                content={item.content}
-                                />
-                            </li>
-                        )}
+                        
+                        <li style={{position:"relative"}}>
+                            <Comment
+                            author={item.User.nickname}
+                            avatar={<Avatar>{item.User.nickname[0]}</Avatar>}
+                            content={item.content}
+                            >
+                            {item.User.id === id
+                            ? (<Button style={{position:"absolute", top:"50%",right:"30px",transform:"translateY(-50%)"}} onClick={e => onRemoveComment(item.id)}>삭제</Button>
+                            ) : null}
+                            </Comment>
+                        </li>
+                    )}
+                    // renderItem={(item) => (
+                        
+                    //         <li style={{position:"relative"}}>
+                    //             <Comment
+                    //             author={item.User.nickname}
+                    //             avatar={<Avatar>{item.User.nickname[0]}</Avatar>}
+                    //             content={item.content}
+                    //             >
+                    //             {item.User.id === id
+                    //             ? (<Button style={{position:"absolute", top:"50%",right:"30px",transform:"translateY(-50%)"}} onClick={onRemoveComment}>삭제</Button>
+                    //             ) : null}
+                    //             </Comment>
+                    //         </li>
+                    //     )}
                     />
                 </div>
             )}

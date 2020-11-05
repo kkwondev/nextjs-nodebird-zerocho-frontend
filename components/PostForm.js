@@ -16,6 +16,9 @@ const PostForm = () => {
         }
     },[addPostDone])
     const onsubmit = useCallback (() => {
+        if(!text) {
+            return alert('내용이 입력 되지 않았습니다.')
+        }
         dispatch(addPost(text));
     }, [text]);
 

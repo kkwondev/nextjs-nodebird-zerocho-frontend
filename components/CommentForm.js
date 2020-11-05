@@ -19,6 +19,9 @@ const CommentForm = ({post}) => {
     },[addCommentDone])
 
     const onSubmitComment = useCallback(() => {
+        if(!commentText) {
+            return alert('내용이 입력 되지 않았습니다.')
+        }
         dispatch({
           type: ADD_COMMENT_REQUEST,
           data: { content: commentText, UserId: id,  PostId: post.id },
