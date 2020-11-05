@@ -140,7 +140,7 @@ export const addComment = (data) => ({
       case REMOVE_POST_SUCCESS:
         draft.removePostLoading = false;
         draft.removePostDone = true;
-        draft.mainPosts = draft.mainPosts.filter((v) => v.id !== action.data.PostId);
+        draft.post.Comments = draft.post.Comments.filter((v)=> v.id !== action.data.CommentId )
         break;
       case REMOVE_POST_FAILURE:
         draft.removePostLoading = false;

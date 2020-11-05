@@ -53,11 +53,11 @@ const PostCard = ({post}) => {
     const onRemoveComment = (post_id) => {
         dispatch({
             type:REMOVE_COMMENT_REQUEST,
-            data: { id:post_id, PostId: post.id}
+            data: post_id
         })
     }
     
-    const liked = post.Likers.find((v) => v.UserId === id);
+    const liked = post.Likers.find((v) => v.id === id);
 
     useEffect(() => {
 

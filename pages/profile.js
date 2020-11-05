@@ -3,11 +3,13 @@ import AppLayout from '../components/AppLayout';
 import Head from 'next/head';
 import NicknameEditForm from '../components/NicknameEditForm'
 import FollowList from '../components/FollowList';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import  Router  from 'next/router';
+import { LOAD_FOLLOWERS_REQUEST , LOAD_FOLLOWINGS_REQUEST} from '../reducers/user';
 
 const Profile = () => {
     const { me } = useSelector((state) => state.user)
+    const dispatch = useDispatch();
 // 로그인 안한상태에서 or 프로필 상태에서 홈으로 가기
     useEffect(()=> {
         if(!(me && me.id)) {
@@ -18,7 +20,14 @@ const Profile = () => {
     if (!me) {
         return null;
     }
-
+    useEffect(()=> {
+        dispatch({
+            type:LOAD_FOLLOWERS_REQUEST,
+        })
+        dispatch({
+            type:LOAD_FOLLOWINGS_REQUEST,
+        })
+    },[])
     return (
         <>
         <Head>
