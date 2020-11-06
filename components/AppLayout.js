@@ -27,7 +27,6 @@ const Global = createGlobalStyle`
 
 const AppLayout = ({children}) => {
     const { me, logInDone } = useSelector(state => state.user);
-    console.debug(logInDone)
     return (
         <div>
             <Global/>

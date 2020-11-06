@@ -49,26 +49,32 @@ const PostCard = ({post}) => {
     //         data:post.Comments,
     //     })
     // }, [])
-
-    const onRemoveComment = (post_id) => {
+    const onRemoveComment = (id) => () => {
         dispatch({
             type:REMOVE_COMMENT_REQUEST,
-            data: post_id
+            data:{commentId : id, postId:post.id}
         })
     }
+
+    // const onRemoveComment = (post_id) => {
+    //     dispatch({
+    //         type:REMOVE_COMMENT_REQUEST,
+    //         data: post_id
+    //     })
+    // }
     
     const liked = post.Likers.find((v) => v.id === id);
 
-    useEffect(() => {
+    // useEffect(() => {
 
-        const myList = post.Comments.filter(function(e){
-            return e.UserId === id
-        })
+    //     const myList = post.Comments.filter(function(e){
+    //         return e.UserId === id
+    //     })
         
-        if(myList.length > 0) {
-            setPostItems(myList)
-        }
-    }, [post.Comments])
+    //     if(myList.length > 0) {
+    //         setPostItems(myList)
+    //     }
+    // }, [post.Comments])
 
     return (
         <div style={{marginBottom: 20}}>
@@ -120,7 +126,12 @@ const PostCard = ({post}) => {
                             content={item.content}
                             >
                             {item.User.id === id
-                            ? (<Button style={{position:"absolute", top:"50%",right:"30px",transform:"translateY(-50%)"}} onClick={e => onRemoveComment(item.id)}>삭제</Button>
+                            ? (<Button style={
+                                {position:"absolute", 
+                                top:"50%",
+                                right:"30px",
+                                transform:"translateY(-50%)"}} 
+                                onClick={onRemoveComment(item.id)}>삭제</Button>
                             ) : null}
                             </Comment>
                         </li>

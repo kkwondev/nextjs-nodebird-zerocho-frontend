@@ -80,13 +80,14 @@ function* addPost(action) {
 }
 
 function removePostAPI(data) {
-    return axios.delete(`/post/${data}`) // 요청한다. 서버에
+    return axios.delete(`/post/${data.id}`) // 요청한다. 서버에
 }
 
 
 function* removePost(action) {
     try { //요청에 성공 했다.
         const result = yield call(removePostAPI,action.data) // call 동기
+        console.debug(action.data)
         yield put ({
             type : REMOVE_POST_SUCCESS,
            data: result.data,
@@ -125,7 +126,7 @@ function* addComment(action) {
 }
 
 function removeCommentAPI(data) {
-    return axios.delete(`/post/comment/${data}`) // 요청한다. 서버에
+    return axios.post(`/post/comment/${data.commentId}`,data) // 요청한다. 서버에
 }
 
 

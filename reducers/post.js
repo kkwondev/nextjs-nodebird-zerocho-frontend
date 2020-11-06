@@ -140,7 +140,7 @@ export const addComment = (data) => ({
       case REMOVE_POST_SUCCESS:
         draft.removePostLoading = false;
         draft.removePostDone = true;
-        draft.post.Comments = draft.post.Comments.filter((v)=> v.id !== action.data.CommentId )
+        draft.mainPosts = draft.mainPosts.filter((v) => v.id !== action.data.PostId);
         break;
       case REMOVE_POST_FAILURE:
         draft.removePostLoading = false;
@@ -168,10 +168,10 @@ export const addComment = (data) => ({
         draft.removeCommentError = null;
         break;
       case REMOVE_COMMENT_SUCCESS: {
+        const post = draft.mainPosts.find((v) => v.id === action.data.postId);
+        post.Comments = post.Comments.filter((v) => v.id !== action.data.commentId)
         draft.removeCommentLoading = false;
         draft.removeCommentDone = true;
-        draft.mainPosts = draft.mainPosts.filter((v) => v.id !== action.data.id);
-        console.debug(draft.mainPosts.id)
         break;
     }
       case REMOVE_COMMENT_FAILURE:
