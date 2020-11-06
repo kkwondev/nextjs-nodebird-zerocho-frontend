@@ -8,7 +8,7 @@ import { useDispatch } from 'react-redux';
 const FollowList = ({header,data}) => {
     const dispatch = useDispatch()
     const onClick = (id) => () => {
-        if(header === '팔로잉') {
+        if(header === '팔로잉 목록') {
         dispatch({
             type:UNFOLLOW_REQUEST,
             data:id,
