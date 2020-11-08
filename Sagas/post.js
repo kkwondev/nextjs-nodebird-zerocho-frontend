@@ -7,7 +7,7 @@ import {
     LOAD_POST_REQUEST, LOAD_POST_SUCCESS, LOAD_POST_FAILURE, 
     LIKE_POST_REQUEST, LIKE_POST_SUCCESS, LIKE_POST_FAILURE,
     UNLIKE_POST_REQUEST,UNLIKE_POST_SUCCESS, UNLIKE_POST_FAILURE, 
-    REMOVE_COMMENT_REQUEST, REMOVE_COMMENT_FAILURE, REMOVE_COMMENT_SUCCESS 
+    REMOVE_COMMENT_REQUEST, REMOVE_COMMENT_FAILURE, REMOVE_COMMENT_SUCCESS, UPLOAD_IMAGES_REQUEST, UPLOAD_IMAGES_SUCCESS, UPLOAD_IMAGES_FAILURE 
     } from '../reducers/post';
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from "../reducers/user";
 
@@ -57,7 +57,7 @@ function* unLikePost(action) {
 
 
 function addPostAPI(data) {
-    return axios.post('/post', { content: data }) // 요청한다. 서버에
+    return axios.post('/post', data) // 요청한다. 서버에
 }
 
 function* addPost(action) {
@@ -80,7 +80,7 @@ function* addPost(action) {
 }
 
 function removePostAPI(data) {
-    return axios.delete(`/post/${data.id}`) // 요청한다. 서버에
+    return axios.delete(`/post/${data}`) // 요청한다. 서버에
 }
 
 
@@ -147,7 +147,7 @@ function* removeComment(action) {
 }
 
 function loadPostAPI(data) {
-    return axios.get(`/posts`);
+    return axios.get(`/posts`, data);
   }
   
   function* loadPost(action) {
@@ -161,6 +161,26 @@ function loadPostAPI(data) {
       console.error(err);
       yield put({
         type: LOAD_POST_FAILURE,
+        error: err.response.data,
+      });
+    }
+  }
+
+  function uploadImagesAPI(data) {
+    return axios.post('/post/images',data);
+  }
+  
+  function* uploadImages(action) {
+    try {
+      const result = yield call(uploadImagesAPI, action.data);
+      yield put({
+        type: UPLOAD_IMAGES_SUCCESS,
+        data: result.data,
+      });
+    } catch (err) {
+      console.error(err);
+      yield put({
+        type: UPLOAD_IMAGES_FAILURE,
         error: err.response.data,
       });
     }
@@ -189,6 +209,9 @@ function* watchLikePost() {
 function* watchunLikePost() {
     yield takeLatest(UNLIKE_POST_REQUEST, unLikePost);
 }
+function* watchuploadImages() {
+    yield takeLatest(UPLOAD_IMAGES_REQUEST, uploadImages);
+}
 
 
 export default function* postSaga() {
@@ -200,5 +223,6 @@ export default function* postSaga() {
       fork(watchLoadPost),
       fork(watchLikePost),
       fork(watchunLikePost),
+      fork(watchuploadImages),
     ])
 }
