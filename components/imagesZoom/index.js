@@ -1,4 +1,4 @@
-import PropTypes from 'prop-types';
+import propTypes from 'prop-types';
 import { useCallback, useState } from 'react';
 import Slick from 'react-slick';
 import { Overlay, Global, Header, CloseBtn, Indicator, ImgWrapper, SlickWrapper } from './styles'
@@ -51,9 +51,9 @@ const ImagesZoom = ({images, onClose}) => {
     );
 }
 
-ImagesZoom.PropTypes = {
-    images: PropTypes.arrayOf(PropTypes.object).isRequired,
-    onClose: PropTypes.func.isRequired
+ImagesZoom.propTypes = {
+    images: propTypes.arrayOf(propTypes.object).isRequired,
+    onClose: propTypes.func.isRequired
 }
 
 export default ImagesZoom;

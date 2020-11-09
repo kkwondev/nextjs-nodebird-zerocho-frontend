@@ -39,10 +39,12 @@ export const SlickWrapper = styled.div`
 `;
 
 export const ImgWrapper = styled.div `
+    width:100%;
     padding:32px;
     text-align:center;
 
     & img {
+        display:block;
         margin: 0 auto;
         max-height:750px;
     }

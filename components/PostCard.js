@@ -1,20 +1,26 @@
-import {Button, Card,Popover,Avatar,List,Comment} from 'antd';
+import {Button, Card,Popover,Avatar,List,Comment,Form,Input} from 'antd';
 import PropTypes from 'prop-types';
 import {RetweetOutlined,HeartOutlined,MessageOutlined,EllipsisOutlined,HeartTwoTone } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
+import  moment  from 'moment';
 
+import useInput from '../hooks/useInput';
 import FollowButton from './FollowButton';
 import PostCardContent from './PostCardContent';
 import PostImages from './PostImages';
 import CommentForm from './CommentForm';
 import { useCallback, useEffect, useState } from 'react';
-import { REMOVE_POST_REQUEST,LIKE_POST_REQUEST,UNLIKE_POST_REQUEST,REMOVE_COMMENT_REQUEST,RETWEET_REQUEST } from '../reducers/post';
+import { REMOVE_POST_REQUEST,LIKE_POST_REQUEST,
+    UNLIKE_POST_REQUEST,REMOVE_COMMENT_REQUEST,RETWEET_REQUEST,
+    UPDATE_POST_REQUEST } from '../reducers/post';
 
 const PostCard = ({post}) => {
 
     const [commentFormOpened, setCommentFromOpened] = useState(false)
+    const [postUpdateOpened, setPostUpdateOpend] = useState(false)
+    const [text,onChangeText,setText] = useInput();
     const id = useSelector(state => state.user.me?.id);
-    const {removePostLoading} = useSelector((state) => state.post)
+    const {removePostLoading,updatePostDone ,updatePostError} = useSelector((state) => state.post)
     const dispatch = useDispatch()
     // 좋아요 액션 타입 
     const onLike = useCallback(() => {
@@ -35,8 +41,28 @@ const PostCard = ({post}) => {
             data:post.id
         })
     },[])
+    // 수정창
+    const onTogglePost = useCallback(() => {
+        setPostUpdateOpend((prev)=> !prev);
+    },)
 
+    useEffect(()=> {
+        if(updatePostDone || updatePostError) {
+            setText('')
+            setPostUpdateOpend(false);
+        }
+    },[updatePostDone,updatePostError])
     // 댓글창
+
+    const onUpdate = useCallback(()=> {
+        if(!id) {
+            return alert('로그인이 필요합니다.')  
+        }
+        return dispatch({
+            type:UPDATE_POST_REQUEST,
+            data:{content : text, postId:post.id},
+        })
+    },[text])
     const onToggleComment = useCallback(() => {
         setCommentFromOpened((prev)=> !prev);
     }, [])
@@ -72,7 +98,7 @@ const PostCard = ({post}) => {
     },[])
 
     const liked = post.Likers.find((v) => v.id === id);
-
+    console.debug(postUpdateOpened)
 
     return (
         <div style={{marginBottom: 20}}>
@@ -90,7 +116,7 @@ const PostCard = ({post}) => {
                         {id && post.User.id == id  
                         ? (
                         <>
-                        <Button>수정</Button>
+                        <Button onClick={onTogglePost}>수정</Button>
                         <Button type="danger" loading={removePostLoading} onClick={onRemovePost}>삭제</Button>
                         </>
                          ) :
@@ -105,9 +131,11 @@ const PostCard = ({post}) => {
             >
                 {post.RetweetId && post.RetweetId
                 ?(
+                    
                     <Card
                     cover={post.Retweet.Images[0] && <PostImages images={post.Retweet.Images} />}
                   >
+                   <div style={{ float: 'right' }}>{moment(post.createdAt).format('YYYY.MM.DD')}</div>   
                     <Card.Meta
                     avatar={<Avatar>{post.Retweet.User.nickname[0]}</Avatar>}
                     title={post.Retweet.User.nickname}
@@ -116,11 +144,15 @@ const PostCard = ({post}) => {
                     </Card>
                 )
                 :(
+                <>
+                <div style={{ float: 'right' }}>{moment(post.createdAt).format('YYYY.MM.DD')}</div>
                 <Card.Meta
                 avatar={<Avatar>{post.User.nickname[0]}</Avatar>}
                 title={post.User.nickname}
                 description={<PostCardContent postData={post.content} />}
-                />)
+                />
+                </>
+                )
                 }
             </Card>
             {commentFormOpened && (
@@ -150,6 +182,19 @@ const PostCard = ({post}) => {
                         </li>
                     )}
                     />
+                </div>
+            )}
+            {postUpdateOpened &&(
+                <div>
+                    <Form encType="multipart/form-data" onFinish={onUpdate}>
+                    <Input.TextArea
+                value={text}
+                onChange={onChangeText}
+                maxLength={140} 
+                placeholder='수정할 내용을 적으세요' 
+            />
+             <Button type="primary" style={{float:'right'}} htmlType='submit'>수정하기</Button>
+                    </Form>
                 </div>
             )}
         </div>

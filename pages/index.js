@@ -9,15 +9,17 @@ import { LOAD_USER_REQUEST } from '../reducers/user';
 
 const Home = () => {
   const { me } = useSelector(state => state.user);
-  const { mainPosts,hasMorePost, loadPostLoading,retweetError } = useSelector((state) => state.post);
+  const { mainPosts,hasMorePost, loadPostLoading,retweetError,updatePostError } = useSelector((state) => state.post);
   const dispatch = useDispatch()
   
 
   useEffect(()=> {
     if(retweetError) {
       alert(retweetError)
+    } else if(updatePostError) {
+      alert(updatePostError)
     }
-  },[retweetError])
+  },[retweetError,updatePostError])
 
   useEffect(()=>{
     dispatch({

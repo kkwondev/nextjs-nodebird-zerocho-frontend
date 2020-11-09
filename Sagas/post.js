@@ -7,7 +7,7 @@ import {
     LOAD_POST_REQUEST, LOAD_POST_SUCCESS, LOAD_POST_FAILURE, 
     LIKE_POST_REQUEST, LIKE_POST_SUCCESS, LIKE_POST_FAILURE,
     UNLIKE_POST_REQUEST,UNLIKE_POST_SUCCESS, UNLIKE_POST_FAILURE, 
-    REMOVE_COMMENT_REQUEST, REMOVE_COMMENT_FAILURE, REMOVE_COMMENT_SUCCESS, UPLOAD_IMAGES_REQUEST, UPLOAD_IMAGES_SUCCESS, UPLOAD_IMAGES_FAILURE, RETWEET_REQUEST, RETWEET_SUCCESS, RETWEET_FAILURE 
+    REMOVE_COMMENT_REQUEST, REMOVE_COMMENT_FAILURE, REMOVE_COMMENT_SUCCESS, UPLOAD_IMAGES_REQUEST, UPLOAD_IMAGES_SUCCESS, UPLOAD_IMAGES_FAILURE, RETWEET_REQUEST, RETWEET_SUCCESS, RETWEET_FAILURE, UPDATE_POST_REQUEST, UPDATE_POST_SUCCUESS, UPDATE_POST_FAILURE 
     } from '../reducers/post';
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from "../reducers/user";
 
@@ -201,6 +201,26 @@ function loadPostAPI(lastId) {
     }
   }
 
+  function updatePostAPI(data) {
+    return axios.patch('/post/update', data) // 요청한다. 서버에
+}
+
+
+function* updatePost(action) {
+    try { //요청에 성공 했다.
+        const result = yield call(updatePostAPI,action.data)
+        yield put ({
+            type : UPDATE_POST_SUCCUESS,
+           data: result.data // 요청한 데이터를 받는다. 서버에서
+        });
+     } catch (err) { // 요청에 실패했다.
+         yield put ({
+             type:UPDATE_POST_FAILURE,
+             error: err.response.data
+         })
+     }
+}
+
 
 
 function* watchAddPost() {
@@ -230,7 +250,9 @@ function* watchuploadImages() {
 function* watchRetweet() {
     yield takeLatest(RETWEET_REQUEST, retweet);
 }
-
+function* watchUpdatePost() {
+    yield takeLatest(UPDATE_POST_REQUEST, updatePost);
+}
 
 export default function* postSaga() {
     yield all([
@@ -242,6 +264,7 @@ export default function* postSaga() {
       fork(watchLikePost),
       fork(watchunLikePost),
       fork(watchuploadImages),
-      fork(watchRetweet,retweet),
+      fork(watchRetweet),
+      fork(watchUpdatePost),
     ])
 }

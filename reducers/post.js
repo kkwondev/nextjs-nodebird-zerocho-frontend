@@ -9,6 +9,9 @@ export const initialState = {
     addPostLoading:false,
     addPostDone:false,
     addPostError:null,
+    updatePostLoading:false,
+    updatePostDone:false,
+    updatePostError:null,
     loadPostLoading:false,
     loadPostDone:false,
     loadPostError:null,
@@ -51,6 +54,10 @@ export const initialState = {
   export const ADD_POST_REQUEST = 'ADD_POST_REQUEST';
   export const ADD_POST_SUCCUESS = 'ADD_POST_SUCCUESS';
   export const ADD_POST_FAILURE = 'ADD_POST_FAILURE';
+
+  export const UPDATE_POST_REQUEST = 'UPDATE_POST_REQUEST';
+  export const UPDATE_POST_SUCCUESS = 'UPDATE_POST_SUCCUESS';
+  export const UPDATE_POST_FAILURE = 'UPDATE_POST_FAILURE';
 
   export const REMOVE_POST_REQUEST = 'REMOVE_POST_REQUEST';
   export const REMOVE_POST_SUCCESS = 'REMOVE_POST_SUCCESS';
@@ -118,6 +125,22 @@ export const addComment = (data) => ({
           draft.addPostLoading = false;
           draft.addPostError = action.error;
         break;
+        case UPDATE_POST_REQUEST: 
+        draft.updatePostLoading =true;
+        draft.updatePostDone = false;
+        draft.updatePostError = null;
+        break;
+        case UPDATE_POST_SUCCUESS: {
+          draft.updatePostLoading =false;
+          draft.updatePostDone = true;
+          const post = draft.mainPosts.find((v) => v.id === action.data.postId);
+          post.content = action.data.content;
+        break;
+        }
+        case UPDATE_POST_FAILURE:
+          draft.updatePostLoading = false;
+          draft.updatePostError = action.error;
+        break;
         case LIKE_POST_REQUEST: 
         draft.likePostLoading =true;
         draft.likePostDone = false;
@@ -125,7 +148,6 @@ export const addComment = (data) => ({
         break;
         case LIKE_POST_SUCCESS:
           const post = draft.mainPosts.find((v) => v.id === action.data.PostId);
-          console.debug(post)
           post.Likers.push({ id: action.data.UserId });
           draft.likePostLoading =false;
           draft.likePostDone = true;

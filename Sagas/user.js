@@ -1,6 +1,6 @@
 
 import axios from 'axios';
-import { all,put,delay,takeLatest,fork,call } from "redux-saga/effects";
+import { all,put,takeLatest,fork,call } from "redux-saga/effects";
 import {LOG_IN_SUCCESS, LOG_IN_FAILURE, LOG_IN_REQUEST, 
         LOG_OUT_FAILURE , LOG_OUT_SUCCESS ,LOG_OUT_REQUEST,
         SIGN_UP_REQUEST, SIGN_UP_SUCCESS, SIGN_UP_FAILURE, 

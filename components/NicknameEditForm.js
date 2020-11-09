@@ -20,7 +20,6 @@ const onSubmit = useCallback(()=> {
         data:nickname,
     })
 },[nickname])
-console.debug(ChangeNickname)
     return(
         <Form style={style}>
             <Input.Search 
