@@ -8,25 +8,29 @@ import PostCardContent from './PostCardContent';
 import PostImages from './PostImages';
 import CommentForm from './CommentForm';
 import { useCallback, useEffect, useState } from 'react';
-import { REMOVE_POST_REQUEST,LIKE_POST_REQUEST,UNLIKE_POST_REQUEST,REMOVE_COMMENT_REQUEST } from '../reducers/post';
+import { REMOVE_POST_REQUEST,LIKE_POST_REQUEST,UNLIKE_POST_REQUEST,REMOVE_COMMENT_REQUEST,RETWEET_REQUEST } from '../reducers/post';
 
 const PostCard = ({post}) => {
 
     const [commentFormOpened, setCommentFromOpened] = useState(false)
-    const [postItems, setPostItems] = useState([])
     const id = useSelector(state => state.user.me?.id);
     const {removePostLoading} = useSelector((state) => state.post)
-    const comments = useSelector((state) => post.Comments);
     const dispatch = useDispatch()
     // 좋아요 액션 타입 
     const onLike = useCallback(() => {
-        dispatch({
+        if(!id) {
+           return alert('로그인이 필요합니다.')
+        }
+       return dispatch({
             type:LIKE_POST_REQUEST,
             data:post.id
         })
     },[])
     const onunLike = useCallback(() => {
-        dispatch({
+        if(!id) {
+            return alert('로그인이 필요합니다.')
+         }
+        return dispatch({
             type:UNLIKE_POST_REQUEST,
             data:post.id
         })
@@ -38,50 +42,44 @@ const PostCard = ({post}) => {
     }, [])
     // 게시글 삭제 액션 타입
     const onRemovePost = useCallback(() => {
-        dispatch({
+        if(!id) {
+            return alert('로그인이 필요합니다.')
+         }
+        return dispatch({
             type:REMOVE_POST_REQUEST,
             data:post.id,
         })
     }, [])
-    // const onRemoveComment = useCallback(() => {
-    //     dispatch({
-    //         type:REMOVE_COMMENT_REQUEST,
-    //         data:post.Comments,
-    //     })
-    // }, [])
+
     const onRemoveComment = (id) => () => {
-        dispatch({
+        if(!id) {
+            return alert('로그인이 필요합니다.')
+         }
+        return dispatch({
             type:REMOVE_COMMENT_REQUEST,
             data:{commentId : id, postId:post.id}
         })
     }
 
-    // const onRemoveComment = (post_id) => {
-    //     dispatch({
-    //         type:REMOVE_COMMENT_REQUEST,
-    //         data: post_id
-    //     })
-    // }
-    
+    const onRetweet = useCallback(() => {
+        if(!id) {
+            return alert('로그인이 필요합니다.')
+        }
+        return dispatch({
+            type:RETWEET_REQUEST,
+            data:post.id,
+        })
+    },[])
+
     const liked = post.Likers.find((v) => v.id === id);
 
-    // useEffect(() => {
-
-    //     const myList = post.Comments.filter(function(e){
-    //         return e.UserId === id
-    //     })
-        
-    //     if(myList.length > 0) {
-    //         setPostItems(myList)
-    //     }
-    // }, [post.Comments])
 
     return (
         <div style={{marginBottom: 20}}>
             <Card
             cover={post.Images[0] && <PostImages images={post.Images}/>}
             actions={[
-                <RetweetOutlined key="retwwet"/>,
+                <RetweetOutlined key="retweet" onClick={onRetweet}/>,
                 liked
                     ? <HeartTwoTone twoToneColor="#eb2f96" key="heart" onClick={onunLike}/>
                     : <HeartOutlined key="heart"onClick={onLike}/>,
@@ -102,13 +100,28 @@ const PostCard = ({post}) => {
                     <EllipsisOutlined />
                 </Popover>
             ]}
+            title= {post.RetweetId ? `${post.User.nickname} 님이 리트윗하셨습니다.` : null}
             extra={id &&(<FollowButton post={post}/>)}
             >
+                {post.RetweetId && post.RetweetId
+                ?(
+                    <Card
+                    cover={post.Retweet.Images[0] && <PostImages images={post.Retweet.Images} />}
+                  >
+                    <Card.Meta
+                    avatar={<Avatar>{post.Retweet.User.nickname[0]}</Avatar>}
+                    title={post.Retweet.User.nickname}
+                    description={<PostCardContent postData={post.Retweet.content} />}
+                    />
+                    </Card>
+                )
+                :(
                 <Card.Meta
                 avatar={<Avatar>{post.User.nickname[0]}</Avatar>}
                 title={post.User.nickname}
                 description={<PostCardContent postData={post.content} />}
-                />
+                />)
+                }
             </Card>
             {commentFormOpened && (
                <div>
@@ -136,20 +149,6 @@ const PostCard = ({post}) => {
                             </Comment>
                         </li>
                     )}
-                    // renderItem={(item) => (
-                        
-                    //         <li style={{position:"relative"}}>
-                    //             <Comment
-                    //             author={item.User.nickname}
-                    //             avatar={<Avatar>{item.User.nickname[0]}</Avatar>}
-                    //             content={item.content}
-                    //             >
-                    //             {item.User.id === id
-                    //             ? (<Button style={{position:"absolute", top:"50%",right:"30px",transform:"translateY(-50%)"}} onClick={onRemoveComment}>삭제</Button>
-                    //             ) : null}
-                    //             </Comment>
-                    //         </li>
-                    //     )}
                     />
                 </div>
             )}
