@@ -66,6 +66,7 @@ const PostCard = ({post}) => {
     const onToggleComment = useCallback(() => {
         setCommentFromOpened((prev)=> !prev);
     }, [])
+
     // 게시글 삭제 액션 타입
     const onRemovePost = useCallback(() => {
         if(!id) {
@@ -98,7 +99,6 @@ const PostCard = ({post}) => {
     },[])
 
     const liked = post.Likers.find((v) => v.id === id);
-    console.debug(postUpdateOpened)
 
     return (
         <div style={{marginBottom: 20}}>

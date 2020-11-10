@@ -16,11 +16,13 @@ const Home = () => {
   useEffect(()=> {
     if(retweetError) {
       alert(retweetError)
-    } else if(updatePostError) {
-      alert(updatePostError)
     }
-  },[retweetError,updatePostError])
-
+  },[retweetError])
+  useEffect(()=> {
+    if(updatePostError) {
+        alert(updatePostError)
+    }
+},[updatePostError])
   useEffect(()=>{
     dispatch({
       type:LOAD_USER_REQUEST,
