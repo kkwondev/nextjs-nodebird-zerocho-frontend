@@ -4,9 +4,13 @@ import Head from 'next/head'
 import Form from 'antd/lib/form/Form';
 import { Input,Checkbox,Button } from 'antd';
 import useInput from '../hooks/useInput';
-import { LOG_OUT_SUCCESS, SIGN_UP_REQUEST } from '../reducers/user';
+import { LOG_OUT_SUCCESS, SIGN_UP_REQUEST,LOAD_MY_INFO_REQUEST } from '../reducers/user';
 import { useDispatch, useSelector } from 'react-redux';
 import Router from 'next/router';
+
+import axios from 'axios';
+import wrapper from '../store/configureStore'
+import { END } from 'redux-saga';
 
 
 
@@ -105,4 +109,17 @@ const Signup = () => {
         </>
     );
 }
+
+export const getServerSideProps = wrapper.getServerSideProps(async (context) => {
+    const cookie = context.req ? context.req.headers.cookie : '';
+    axios.defaults.headers.Cookie = '';
+    if(context.req && cookie) {
+        axios.defaults.headers.Cookie = cookie;
+    }
+    context.store.dispatch({
+        type:LOAD_MY_INFO_REQUEST,
+    })
+    context.store.dispatch(END)
+    await context.store.sagaTask.toPromise();
+})
 export default React.memo(Signup);
