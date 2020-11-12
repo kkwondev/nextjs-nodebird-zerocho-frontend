@@ -15,7 +15,7 @@ const UserProfile = () => {
     return(
         <Card
             actions={[
-                <div key="twit">쨱쨱<br/>{me.Posts.length}</div>,
+                <div key="twit"><Link href={`/user/${me.id}`}>짹쨱</Link><br/>{me.Posts.length}</div>,
                 <div key="followings"><Link href="/profile">팔로잉</Link><br/>{me.Followings.length}</div>,
                 <div key="followings"><Link href="/profile">팔로워</Link><br/>{me.Followers.length}</div>,
             ]}>

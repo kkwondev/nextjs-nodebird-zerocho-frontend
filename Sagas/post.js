@@ -7,7 +7,7 @@ import {
     LOAD_POSTS_REQUEST, LOAD_POSTS_SUCCESS, LOAD_POSTS_FAILURE, 
     LIKE_POST_REQUEST, LIKE_POST_SUCCESS, LIKE_POST_FAILURE,
     UNLIKE_POST_REQUEST,UNLIKE_POST_SUCCESS, UNLIKE_POST_FAILURE, 
-    REMOVE_COMMENT_REQUEST, REMOVE_COMMENT_FAILURE, REMOVE_COMMENT_SUCCESS, UPLOAD_IMAGES_REQUEST, UPLOAD_IMAGES_SUCCESS, UPLOAD_IMAGES_FAILURE, RETWEET_REQUEST, RETWEET_SUCCESS, RETWEET_FAILURE, UPDATE_POST_REQUEST, UPDATE_POST_SUCCUESS, UPDATE_POST_FAILURE, LOAD_POST_REQUEST, LOAD_POST_SUCCESS, LOAD_POST_FAILURE 
+    REMOVE_COMMENT_REQUEST, REMOVE_COMMENT_FAILURE, REMOVE_COMMENT_SUCCESS, UPLOAD_IMAGES_REQUEST, UPLOAD_IMAGES_SUCCESS, UPLOAD_IMAGES_FAILURE, RETWEET_REQUEST, RETWEET_SUCCESS, RETWEET_FAILURE, UPDATE_POST_REQUEST, UPDATE_POST_SUCCUESS, UPDATE_POST_FAILURE, LOAD_POST_REQUEST, LOAD_POST_SUCCESS, LOAD_POST_FAILURE, LOAD_USER_POSTS_REQUEST, LOAD_USER_POSTS_SUCCESS, LOAD_USER_POSTS_FAILURE 
     } from '../reducers/post';
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from "../reducers/user";
 
@@ -160,6 +160,28 @@ function loadPostsAPI(lastId) {
       });
     }
   }
+
+  function loadUserPostsAPI(data,lastId) {
+    return axios.get(`/user/${data}/posts?lastId=${lastId || 0}`);
+  }
+  
+  function* loadUserPosts(action) {
+    try {
+      const result = yield call(loadUserPostsAPI, action.data,action.lastId);
+      yield put({
+        type: LOAD_USER_POSTS_SUCCESS,
+        data: result.data,
+      });
+    } catch (err) {
+      console.error(err);
+      yield put({
+        type: LOAD_USER_POSTS_FAILURE,
+        error: err.response.data,
+      });
+    }
+  }
+
+
   function loadPostAPI(data) {
     return axios.get(`/post/${data}`);
   }
@@ -256,6 +278,9 @@ function* watchRemovePost() {
 function* watchLoadPosts() {
     yield takeLatest(LOAD_POSTS_REQUEST, loadPosts);
 }
+function* watchLoadUserPosts() {
+    yield takeLatest(LOAD_USER_POSTS_REQUEST, loadUserPosts);
+}
 function* watchLoadPost() {
     yield takeLatest(LOAD_POST_REQUEST, loadPost);
 }
@@ -283,6 +308,7 @@ export default function* postSaga() {
       fork(watchRemovePost),
       fork(watchLoadPosts),
       fork(watchLoadPost),
+      fork(watchLoadUserPosts),
       fork(watchLikePost),
       fork(watchunLikePost),
       fork(watchuploadImages),

@@ -36,6 +36,7 @@ export const initialState = {
         removeFollowerDone:false,
         removeFollowerError:null,
         me: null,
+        userInfo:null,
 }
 export const LOAD_MY_INFO_REQUEST = 'LOAD_MY_INFO_REQUEST'
 export const LOAD_MY_INFO_SUCCESS = 'LOAD_MY_INFO_SUCCESS'
@@ -107,7 +108,7 @@ const reducer = (state = initialState, action) => produce(state, (draft) => {
         break;
       case LOAD_USER_SUCCESS:
         draft.loadUserLoading = false;
-        draft.me = action.data;
+        draft.userInfo = action.data;
         draft.loadUserDone = true;
         break;
       case LOAD_USER_FAILURE:

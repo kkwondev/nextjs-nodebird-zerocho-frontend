@@ -50,6 +50,10 @@ export const initialState = {
   export const LOAD_POSTS_SUCCESS = 'LOAD_POSTS_SUCCESS';
   export const LOAD_POSTS_FAILURE = 'LOAD_POSTS_FAILURE';
 
+  export const LOAD_USER_POSTS_REQUEST = 'LOAD_USER_POSTS_REQUEST';
+  export const LOAD_USER_POSTS_SUCCESS = 'LOAD_USER_POSTS_SUCCESS';
+  export const LOAD_USER_POSTS_FAILURE = 'LOAD_USER_POSTS_FAILURE';
+
   export const LIKE_POST_REQUEST = 'LIKE_POST_REQUEST';
   export const LIKE_POST_SUCCESS = 'LIKE_POST_SUCCESS';
   export const LIKE_POST_FAILURE = 'LIKE_POST_FAILURE';
@@ -180,17 +184,20 @@ export const addComment = (data) => ({
           draft.unLikePostLoading = false;
           draft.unLikePostError = action.error;
         break;
+        case LOAD_USER_POSTS_REQUEST:
         case LOAD_POSTS_REQUEST: 
           draft.loadPostsLoading = true;
           draft.loadPostsDone = false;
           draft.loadPostsError = null;
           break;
+        case LOAD_USER_POSTS_SUCCESS:
         case LOAD_POSTS_SUCCESS:
           draft.loadPostsLoading = false;
           draft.loadPostsDone = true;
           draft.mainPosts = draft.mainPosts.concat(action.data);
           draft.hasMorePost = draft.mainPosts.length === 10;
           break;
+        case LOAD_USER_POSTS_FAILURE:
         case LOAD_POSTS_FAILURE:
           draft.addPostLoading = false;
           draft.addPostError = action.error;
